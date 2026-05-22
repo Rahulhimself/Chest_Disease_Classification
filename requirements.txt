@@ -1,11 +1,10 @@
-TensorFlow==2.17.0
-pandas 
+pandas
 gdown
 dvc
 mlflow==2.2.2
+numpy
 matplotlib
 seaborn
-numpy
 python-box==6.0.2
 pyYAML
 tqdm
