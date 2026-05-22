@@ -1,8 +1,7 @@
-from importlib.resources import path
 import os
 from box.exceptions import BoxValueError
 import yaml
-from src.cnnClassifier import logger
+from cnnClassifier import logger
 import json
 import joblib
 from ensure import ensure_annotations
@@ -12,110 +11,127 @@ from typing import Any
 import base64
 
 
+
 @ensure_annotations
 def read_yaml(path_to_yaml: Path) -> ConfigBox:
-    """
-    Reads a yaml file and returns a config_box object.
+    """reads yaml file and returns
 
     Args:
-        path_to_yaml (Path): Path to the yaml file.
-        """
+        path_to_yaml (str): path like input
+
+    Raises:
+        ValueError: if yaml file is empty
+        e: empty file
+
+    Returns:
+        ConfigBox: ConfigBox type
+    """
     try:
         with open(path_to_yaml) as yaml_file:
             content = yaml.safe_load(yaml_file)
-            logger.info(f"yaml file: {path_to_yaml} loaded successfully")
+            logger.info(f"yaml file: {path_to_yaml} loaded")
             return ConfigBox(content)
-    except BoxValueError :
-        raise ValueError("yaml file is invalid/invalid")
+    except BoxValueError:
+        raise ValueError(f"yaml file at {path_to_yaml} is empty or invalid")
     except Exception as e:
         raise e
     
+
+
 @ensure_annotations
-def createt_directories(path_to_directories: list,verbose=True):
-    """
-    Creates a list of directories.
+def create_directories(path_to_directories: list, verbose=True):
+    """create list of directories
 
     Args:
-        path_to_directories (list): List of directories to be created.
+        path_to_directories (list): list of path of directories
+        ignore_log (bool, optional): ignore if multiple dirs is to be created. Defaults to False.
     """
     for path in path_to_directories:
         os.makedirs(path, exist_ok=True)
         if verbose:
-            logger.info(f"Directory: {path} created successfully")
+            logger.info(f"created directory at: {path}")
 
 
 @ensure_annotations
 def save_json(path: Path, data: dict):
-    """
-    Saves a dictionary as a json file.
+    """save json data
 
     Args:
-        path (Path): Path to the json file.
-        data (dict): Dictionary to be saved as json.
+        path (Path): path to json file
+        data (dict): data to be saved in json file
     """
     with open(path, "w") as f:
         json.dump(data, f, indent=4)
+
     logger.info(f"json file saved at: {path}")
+
+
 
 
 @ensure_annotations
 def load_json(path: Path) -> ConfigBox:
-    """
-    Loads a json file and returns a dictionary.
+    """load json files data
 
     Args:
-        path (Path): Path to the json file.
-    """
+        path (Path): path to json file
 
+    Returns:
+        ConfigBox: data as class attributes instead of dict
+    """
     with open(path) as f:
-        content=json.load(f)
+        content = json.load(f)
+
     logger.info(f"json file loaded succesfully from: {path}")
     return ConfigBox(content)
 
 
 @ensure_annotations
 def save_bin(data: Any, path: Path):
-    """
-    Saves a binary file.
+    """save binary file
 
     Args:
-        data (Any): Data to be saved as binary.
-        path (Path): Path to the binary file.
+        data (Any): data to be saved as binary
+        path (Path): path to binary file
     """
-    joblib.dump(value=data,filename=path)
+    joblib.dump(value=data, filename=path)
     logger.info(f"binary file saved at: {path}")
+
 
 @ensure_annotations
 def load_bin(path: Path) -> Any:
-    """
-    Loads a binary file and returns the data.
+    """load binary data
 
     Args:
-        path (Path): Path to the binary file.
+        path (Path): path to binary file
+
+    Returns:
+        Any: object stored in the file
     """
-    data=joblib.load(path)
-    logger.info(f"binary file loaded successfully from: {path}")
+    data = joblib.load(path)
+    logger.info(f"binary file loaded from: {path}")
     return data
 
 @ensure_annotations
 def get_size(path: Path) -> str:
-    """
-    Returns the size of a file in KB.
+    """get size in KB
 
     Args:
-        path (Path): Path to the file.
+        path (Path): path of the file
+
+    Returns:
+        str: size in KB
     """
     size_in_kb = round(os.path.getsize(path)/1024)
-    logger.info(f"file: {path} has size: {size_in_kb} KB")
     return f"~ {size_in_kb} KB"
 
-def decodeImage(imgstring,filename):
+
+def decodeImage(imgstring, fileName):
     imgdata = base64.b64decode(imgstring)
-    with open(filename, 'wb') as f:
+    with open(fileName, 'wb') as f:
         f.write(imgdata)
         f.close()
+
 
 def encodeImageIntoBase64(croppedImagePath):
     with open(croppedImagePath, "rb") as f:
         return base64.b64encode(f.read())
-    
