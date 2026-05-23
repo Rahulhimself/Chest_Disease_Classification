@@ -1,9 +1,11 @@
 import os
+from pathlib import Path
 from src.cnnClassifier.constants import *
 from src.cnnClassifier.utils.common import read_yaml, create_directories
 from src.cnnClassifier.entity.config_entity import (DataIngestionConfig,
                                                     PrepareBaseModelConfig,
-                                                    TrainingConfig)
+                                                    TrainingConfig,
+                                                    EvaluationConfig)
 
 class ConfigurationManager:
     def __init__(
@@ -74,3 +76,24 @@ class ConfigurationManager:
         )
 
         return training_config
+    
+
+
+    def get_evaluation_config(self) -> EvaluationConfig:
+        eval_config = EvaluationConfig(
+            path_of_model=Path("artifacts/training/model.h5"),
+            training_data=Path('artifacts/data_ingestion/Chest-CT-Scan-data'),
+            mlflow_uri="https://dagshub.com/Rahulhimself/Chest_Disease_Classification.mlflow",
+            all_params=dict(self.params),  # Ensure it passes cleanly as a dictionary
+            params_image_size=list(self.params.IMAGE_SIZE),  # Force explicitly into a list
+            params_batch_size=int(self.params.BATCH_SIZE)
+        )
+        return eval_config
+"""debugging note: if you encounter issues with params not being passed correctly, 
+            consider explicitly converting them to the expected types (e.g., list, int) as shown above.
+              This ensures that the EvaluationConfig receives the parameters in the correct format, 
+              preventing potential type-related errors during evaluation."""
+            
+"""# all_params=self.params,
+            # params_image_size=self.params.IMAGE_SIZE,
+            # params_batch_size=self.params.BATCH_SIZE    # Force explicitly into an int"""
