@@ -1,4 +1,13 @@
 import os
+import tensorflow as tf
+import keras
+
+# Forcefully patch the missing attribute into tensorflow.keras
+try:
+    tf.keras.__version__ = keras.__version__
+except AttributeError:
+    # If the module object doesn't let us set attributes directly, patch its class
+    type(tf.keras).__version__ = keras.__version__
 #Suppress TensorFlow's internal oneDNN optimization warnings
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
