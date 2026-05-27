@@ -1,11 +1,11 @@
 stages:
   data_ingestion:
-    cmd: python src/cnnClassifier/pipeline/stage_01_data_ingestion.py
+    cmd: python src\cnnClassifier\pipeline\stage_01_data_ingestion.py
     deps:
-      - src/cnnClassifier/pipeline/stage_01_data_ingestion.py
-      - config/config.yaml
+      - src\cnnClassifier\pipeline\stage_01_data_ingestion.py
+      - config\config.yaml
     outs:
-      - artifacts/data_ingestion/Chest-CT-Scan-data
+      - artifacts\data_ingestion\Chest-CT-Scan-data
 
 
   prepare_base_model:
