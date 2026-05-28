@@ -20,27 +20,27 @@ pipeline {
     stage('Login to ECR') {
       steps {
         script {
-          sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com'
+          // Changed to double quotes so ${AWS_ACCOUNT_ID} evaluates properly
+          sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com"
         }
-
       }
     }
 
     stage('Build Image') {
       steps {
         script {
-          sh 'docker build -t ${ECR_REPOSITORY}:latest .'
+          // Changed to double quotes so ${ECR_REPOSITORY} evaluates properly
+          sh "docker build -t ${ECR_REPOSITORY}:latest ."
         }
-
       }
     }
 
     stage('Push Image') {
       steps {
         script {
-          sh 'docker push ${ECR_REPOSITORY}:latest'
+          // Changed to double quotes so ${ECR_REPOSITORY} evaluates properly
+          sh "docker push ${ECR_REPOSITORY}:latest"
         }
-
       }
     }
 
