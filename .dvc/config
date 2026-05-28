@@ -1,0 +1,5 @@
+[core]
+    autostage = true
+    remote = mys3remote
+['remote "mys3remote"']
+    url = s3://chest-disease-ct-scan/dvc-cache
