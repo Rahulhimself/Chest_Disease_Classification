@@ -27,18 +27,16 @@ pipeline {
             withEnv([
               "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}",
               "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}",
-              "AWS_DEFAULT_REGION=us-east-1"
+              "AWS_DEFAULT_REGION=eu-north-1" 
             ]) {
               echo "Authenticating with AWS ECR..."
-              sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com"
+              sh "aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.eu-north-1.amazonaws.com"
               
               echo "Building Docker Image..."
-              // Prepends the AWS URL to the image tag
-              sh "docker build -t ${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/${ECR_REPO}:latest ."
+              sh "docker build -t ${ACCOUNT_ID}.dkr.ecr.eu-north-1.amazonaws.com/${ECR_REPO}:latest ."
               
               echo "Pushing Image to AWS ECR..."
-              // Pushes explicitly to the AWS URL routing path
-              sh "docker push ${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/${ECR_REPO}:latest"
+              sh "docker push ${ACCOUNT_ID}.dkr.ecr.eu-north-1.amazonaws.com/${ECR_REPO}:latest"
             }
           }
         }
@@ -48,8 +46,7 @@ pipeline {
     stage('Continuous Deployment') {
       steps {
         sshagent(['ssh_key']) {
-          // Explicitly builds the full URL for your deployment server to pull
-          sh "ssh -o StrictHostKeyChecking=no -l ubuntu 16.192.37.46 'cd /home/ubuntu/ && wget https://raw.githubusercontent.com/Rahulhimself/Chest_Disease_Classification/refs/heads/main/docker-compose.yml && export IMAGE_NAME=${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/${ECR_REPOSITORY}:latest && aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com && docker compose up -d '"
+          sh "ssh -o StrictHostKeyChecking=no -l ubuntu 16.192.37.46 'cd /home/ubuntu/ && wget https://raw.githubusercontent.com/Rahulhimself/Chest_Disease_Classification/refs/heads/main/docker-compose.yml && export IMAGE_NAME=${AWS_ACCOUNT_ID}.dkr.ecr.eu-north-1.amazonaws.com/${ECR_REPOSITORY}:latest && aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.eu-north-1.amazonaws.com && docker compose up -d '"
         }
       }
     }
