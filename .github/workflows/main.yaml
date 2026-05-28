@@ -1,8 +1,8 @@
-name:Trigger Jenkins Job
+name: Trigger Jenkins Job
 
 on:
   workflow_dispatch:
-  on push:
+  push:
     branches:
       - main
     
