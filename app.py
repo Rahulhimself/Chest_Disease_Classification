@@ -19,7 +19,8 @@ class ClientApp:
 
 
 
-
+# Route for handling the home page
+# This route will render the index.html template when the user accesses the root URL.
 @app.route("/", methods=['GET'])
 @cross_origin()
 def home():

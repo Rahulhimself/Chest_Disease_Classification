@@ -1,6 +1,8 @@
 name: Trigger Jenkins Job
 #keep the format of the file as it is, do not change the indentation or spacing
 #keep the file name as main.yaml, do not change it
+#This workflow is triggered on push to the main branch and can also be triggered manually.
+#It uses the appleboy/jenkins-action to trigger a Jenkins job with the specified URL, user, token, and job name from the repository secrets.
 on:
   workflow_dispatch:
   push:
